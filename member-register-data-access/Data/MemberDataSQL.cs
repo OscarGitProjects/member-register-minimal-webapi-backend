@@ -4,11 +4,12 @@ using Microsoft.Extensions.Configuration;
 
 namespace MemberRegister.DataAccess.Data;
 
+
 /// <summary>
 /// This class is a interface that implements CRUD methods for this project
-/// Here we use Stored procedure in the database
+/// Here we use SQL for manipulation data in the database
 /// </summary>
-public class MemberData : IMemberData
+public class MemberDataSQL : IMemberDataSQL
 {
     private readonly ISqlDataAccess? m_SqlDataAccess = null;
 
@@ -16,7 +17,7 @@ public class MemberData : IMemberData
     /// Constructor
     /// </summary>
     /// <param name="sqlDataAccess">Reference to the data access object</param>
-    public MemberData(ISqlDataAccessFactory sqlDataAccessFactory, IConfiguration configuration)
+    public MemberDataSQL(ISqlDataAccessFactory sqlDataAccessFactory, IConfiguration configuration)
     {
         if (sqlDataAccessFactory == null)
             throw new ArgumentNullException($"{nameof(MemberData)}. Reference to SqlDataAccessFactory is null");
@@ -24,7 +25,7 @@ public class MemberData : IMemberData
         if (configuration == null)
             throw new ArgumentNullException($"{nameof(MemberData)}. Reference to Configuration is null");
 
-        m_SqlDataAccess = sqlDataAccessFactory?.GetSqlDataAccess(TypeOfSqlAccess.STOREDPROCEDURE, configuration);
+        m_SqlDataAccess = sqlDataAccessFactory?.GetSqlDataAccess(TypeOfSqlAccess.SQL, configuration);
     }
 
 
@@ -34,7 +35,7 @@ public class MemberData : IMemberData
     /// <returns>IEnumerable with members</returns>
     public async Task<IEnumerable<Member>> GetMembersAsync()
     {
-        return await m_SqlDataAccess.QueryAsync<Member, dynamic>(strSqlOrStoredProcedureName: "dbo.usp_Members_GetMembers", new { });
+        return await m_SqlDataAccess.QueryAsync<Member, dynamic>(strSqlOrStoredProcedureName: "SELECT * FROM dbo.[Members]", new { });
     }
 
 
@@ -46,7 +47,7 @@ public class MemberData : IMemberData
     public async Task<Member?> GetMemberAsync(int id)
     {
         Member? member = null;
-        var members = await m_SqlDataAccess.QueryAsync<Member, dynamic>(strSqlOrStoredProcedureName: "dbo.usp_Members_GetMember", new { Id = id });
+        var members = await m_SqlDataAccess.QueryAsync<Member, dynamic>(strSqlOrStoredProcedureName: "SELECT * FROM dbo.[Members] WHERE Id = @Id", new { Id = id });
 
         if (members != null)
             member = members.FirstOrDefault();
@@ -62,8 +63,8 @@ public class MemberData : IMemberData
     /// <returns>Number of rows affected</returns>
     public async Task<int> InsertMemberAsync(Member member)
     {
-        // Fornamn, Efternamn, Adress, Postnummer, Postort, Skapatdatum, Senastuppdateraddatum
-        int iNumerOfRowsAffected = await m_SqlDataAccess.ExecuteAsync(strSqlOrStoredProcedureName: "dbo.usp_Members_InsertMember", new { member.Fornamn, member.Efternamn, member.Adress, member.Postnummer, member.Postort, member.Skapatdatum, member.Senastuppdateraddatum });
+        string sql = "INSERT INTO dbo.[Members] (Fornamn, Efternamn, Adress, Postnummer, Postort, Skapatdatum, Senastuppdateraddatum) VALUES (@Fornamn, @Efternamn, @Adress, @Postnummer, @Postort, @Skapatdatum, @Senastuppdateraddatum)";
+        int iNumerOfRowsAffected = await m_SqlDataAccess.ExecuteAsync(strSqlOrStoredProcedureName: sql, new { member.Fornamn, member.Efternamn, member.Adress, member.Postnummer, member.Postort, member.Skapatdatum, member.Senastuppdateraddatum });
         return iNumerOfRowsAffected;
     }
 
@@ -75,8 +76,8 @@ public class MemberData : IMemberData
     /// <returns>Number of rows affected</returns>
     public async Task<int> UpdateMemberAsync(Member member)
     {
-        // Fornamn, Efternamn, Adress, Postnummer, Postort, Skapatdatum, Senastuppdateraddatum
-        int iNumerOfRowsAffected = await m_SqlDataAccess.ExecuteAsync(strSqlOrStoredProcedureName: "dbo.usp_Members_UpdateMember", new { member.Id, member.Fornamn, member.Efternamn, member.Adress, member.Postnummer, member.Postort, member.Skapatdatum, member.Senastuppdateraddatum });
+        string sql = "UPDATE dbo.[Members] SET Fornamn = @Fornamn, Efternamn = @Efternamn, Adress = @Adress, Postnummer = @Postnummer, Postort = @Postort, Skapatdatum = @Skapatdatum, Senastuppdateraddatum = @Senastuppdateraddatum WHERE Id = @Id";
+        int iNumerOfRowsAffected = await m_SqlDataAccess.ExecuteAsync(strSqlOrStoredProcedureName: sql, new { member.Id, member.Fornamn, member.Efternamn, member.Adress, member.Postnummer, member.Postort, member.Skapatdatum, member.Senastuppdateraddatum });
         return iNumerOfRowsAffected;
     }
 
@@ -88,7 +89,8 @@ public class MemberData : IMemberData
     /// <returns>Number of rows affected</returns>
     public async Task<int> DeleteMemberAsync(int id)
     {
-        int iNumerOfRowsAffected = await m_SqlDataAccess.ExecuteAsync(strSqlOrStoredProcedureName: "dbo.usp_Members_DeleteMember", new { Id = id });
+        string sql = "DELETE FROM dbo.[Members] WHERE Id = @Id;";
+        int iNumerOfRowsAffected = await m_SqlDataAccess.ExecuteAsync(strSqlOrStoredProcedureName: sql, new { Id = id });
         return iNumerOfRowsAffected;
     }
 }

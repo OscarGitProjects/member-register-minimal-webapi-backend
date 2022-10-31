@@ -1,8 +1,7 @@
-﻿namespace MemberRegister.DataAccess.DataAccess
+﻿namespace MemberRegister.DataAccess.DataAccess;
+
+public interface ISqlDataAccess
 {
-    public interface ISqlDataAccess
-    {
-        Task<IEnumerable<T>> LoadDataAsync<T, U>(string strStoredProcedureName, U parameters, string strConnectionId = "dbSqlConnection");
-        Task<int> SaveDataAsync<U>(string strStoredProcedureName, U parameters, string strConnectionId = "dbSqlConnection");
-    }
+    Task<IEnumerable<T>> QueryAsync<T, U>(string strSqlOrStoredProcedureName, U parameters, string strConnectionId = "dbSqlConnection");
+    Task<int> ExecuteAsync<U>(string strSqlOrStoredProcedureName, U parameters, string strConnectionId = "dbSqlConnection");
 }

@@ -9,7 +9,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddLogging();
 builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
+builder.Services.AddSingleton<ISqlDataAccessFactory, SqlDataAccessFactory>();
 builder.Services.AddSingleton<IMemberData, MemberData>();
+builder.Services.AddSingleton<IMemberDataSQL, MemberDataSQL>();
 
 var app = builder.Build();
 
@@ -23,6 +25,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.ConfigureMemberApi();
+
+app.ConfigureMemberSQLApi();
 
 //app.MapGet(pattern: "/Members", async ([FromServices]MemberData memberData) => { 
 //    return await memberData.GetMembersAsync();

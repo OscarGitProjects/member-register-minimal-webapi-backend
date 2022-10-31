@@ -1,10 +1,13 @@
 This project i did to learn to build a minimal API that uses Dapper as a object mapper.
-Its a minimal API for a member register.
+Its a minimal API for a member register. 
+I have one api that uses Stored procedures to access the database and i have added one api that uses SQL to access the database.
 
 Minimal API in .Net 6
 https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis?view=aspnetcore-6.0
+
 Dapper at GitHub
 https://github.com/DapperLib/Dapper
+
 Learn dapper
 https://www.learndapper.com/
 
@@ -12,11 +15,13 @@ To learn this i used a tutorial from a youtube channel with the name IAmTimCory.
 This was a good and instructive tutorial. I learn new things.
 
 Simple C# Data Access with Dapper and SQL - Minimal API Project Part 1. https://www.youtube.com/watch?v=dwMFg6uxQ0I
+
 Minimal API in .NET 6 Using Dapper and SQL - Minimal API Project Part 2. https://www.youtube.com/watch?v=5tYSO5mAjXs
 
 
 MemberRegister.Minimal.Api.csproj. Is the minimal API.
 Watch the second part of the tutorial for more information
+
 swagger https://localhost:7032/swagger/index.html
 
 MembertRegister.DataAccess.csproj Uses dapper and stored procedures to access data in SQL server.

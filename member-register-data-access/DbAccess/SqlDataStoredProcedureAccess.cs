@@ -1,18 +1,16 @@
 ﻿using Dapper;
+using MemberRegister.DataAccess.DataAccess;
+using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
 
 namespace MemberRegister.DataAccess.DataAccess;
 
 /// <summary>
-/// Simple C# Data Access with Dapper and SQL - Minimal API Project Part 1
-/// https://www.youtube.com/watch?v=dwMFg6uxQ0I
-/// 
-/// Data access code. Uses dapper
-/// Use this when u have use SQL
+/// Data access code. Uses dapper.
+/// Use this when u have use StoredProcedure
 /// </summary>
-public class SqlDataAccess : ISqlDataAccess
+public class SqlDataStoredProcedureAccess : ISqlDataAccess
 {
     private readonly IConfiguration m_Config;
 
@@ -20,7 +18,7 @@ public class SqlDataAccess : ISqlDataAccess
     /// Constructor
     /// </summary>
     /// <param name="config">Reference to configuration object</param>
-    public SqlDataAccess(IConfiguration config)
+    public SqlDataStoredProcedureAccess(IConfiguration config)
     {
         this.m_Config = config;
     }
@@ -40,7 +38,7 @@ public class SqlDataAccess : ISqlDataAccess
     {
         using (IDbConnection connection = new SqlConnection(m_Config.GetConnectionString(strConnectionId)))
         {
-            return await connection.QueryAsync<T>(strSqlOrStoredProcedureName, parameters, commandType: CommandType.Text);
+            return await connection.QueryAsync<T>(strSqlOrStoredProcedureName, parameters, commandType: CommandType.StoredProcedure);
         };
     }
 
@@ -58,7 +56,7 @@ public class SqlDataAccess : ISqlDataAccess
     {
         using (IDbConnection connection = new SqlConnection(m_Config.GetConnectionString(strConnectionId)))
         {
-            return await connection.ExecuteAsync(strSqlOrStoredProcedureName, parameters, commandType: CommandType.Text);
+            return await connection.ExecuteAsync(strSqlOrStoredProcedureName, parameters, commandType: CommandType.StoredProcedure);
         };
     }
 }
